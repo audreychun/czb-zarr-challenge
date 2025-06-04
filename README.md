@@ -1,4 +1,7 @@
-# Task 1 - OME-Zarr conversion, reading and parsing data
+# CZB-zarr-challenge
+
+Install using:
+`pip install czb-zarr-challenge==0.1.0`
 
 TODO: TEST THIS OUT STARTING FROM THE BEGINNING AND MAKE SURE EVERYTHING WORKS!
 
