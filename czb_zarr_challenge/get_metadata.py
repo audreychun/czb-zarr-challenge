@@ -67,5 +67,5 @@ if __name__ == "__main__":
     save_metadata_as_txt(metadata, args.output_path)
 
     # example usage:
-    # python main/src/get_metadata.py ../../../data/KazanskyStar_converted.zarr metadata1.txt
+    # python get_metadata.py ../../../data/KazanskyStar_converted.zarr metadata1.txt
     # python main/src/get_metadata.py ../../../data/20241107_infection.zarr metadata2.txt

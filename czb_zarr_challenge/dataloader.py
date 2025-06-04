@@ -9,7 +9,7 @@ import iohub.ngff
 from iohub import open_ome_zarr
 import tqdm
 from pathlib import Path
-from metadata import get_metadata
+from czb_zarr_challenge.get_metadata import get_metadata
 
 # https://docs.pytorch.org/tutorials/beginner/basics/data_tutorial.html
 # basic skeleton of the OMEZarrDataset class (class header, __init__, __len__, __getitem__) generated with the help of ChatGPT. Function contents written by myself.

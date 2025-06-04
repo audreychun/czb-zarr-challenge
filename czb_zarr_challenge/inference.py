@@ -10,13 +10,10 @@ from tqdm import tqdm
 from dataloader import OMEZarrDataset
 
 
-def main():
-    zarr_path = "data/20241107_infection.zarr"
-    batch_size = 4
-    num_batches = 10
-    device = torch.device("cpu")
+def profile_inference(zarr_path, batch_size=4, num_batches=10):
 
     # here we'll use a pretrained resnet18 model from torchvision: docs at https://docs.pytorch.org/vision/main/models/generated/torchvision.models.resnet18.html
+    device = torch.device("cpu")
     model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
     model = model.to(device)
     model.eval()
@@ -61,7 +58,3 @@ def main():
     print(f"\nAverage batch loading time: {avg_data_load:.4f} s")
     print(f"Average inference time: {avg_inference:.4f} s")
     # -------
-
-
-if __name__ == "__main__":
-    main()
