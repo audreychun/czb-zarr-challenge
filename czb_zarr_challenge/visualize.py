@@ -74,7 +74,7 @@ def visualize_infection(
         nuclei = image_array[t, 1, z_slice, :, :].astype(np.float32)
         virus = image_array[t, 2, z_slice, :, :].astype(np.float32)
     
-        p_norm = rescale_intensity(phase3d, in_range='image', out_range=(0.0, 1.0)) * 0.7
+        p_norm = rescale_intensity(phase3d, in_range='image', out_range=(0.0, 1.0))
         n_norm = rescale_intensity(nuclei, in_range='image', out_range=(0.0, 1.0))
         v_norm = rescale_intensity(virus, in_range='image', out_range=(0.0, 1.0)) * 0.2
 
