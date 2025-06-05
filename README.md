@@ -159,14 +159,14 @@ czb-zarr-challenge visualize   data/20241107_infection.zarr   output/   --z-slic
 
 To reproduce all functionality:
 
-1. **Create a fresh virtual environment**  
+1. Create a fresh virtual environment:
    ```bash
    python3 -m venv venv_repro
    source venv_repro/bin/activate
    pip install --upgrade pip
    ```
 
-2. **Install dependencies**  
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
