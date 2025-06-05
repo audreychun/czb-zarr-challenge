@@ -35,11 +35,12 @@ pip install ./iohub
 
 ## OME-TIFF → OME-Zarr Conversion
 
-Use the provided `tiff_to_zarr.py` script. This leverages IOHub’s `TiffConverter` to convert a Micromanager OME-TIFF to OME-Zarr. For Task 1, running the following command will convert Dataset 1 (Micromanager OME-TIFF layout) to OME-Zarr in the same /data folder.
+Use the provided `tiff_to_zarr.py` script. This leverages iohub’s `TiffConverter` to convert a Micromanager OME-TIFF to OME-Zarr. For Task 1, running the following command will convert Dataset 1 (Micromanager OME-TIFF layout) to OME-Zarr in the same /data folder.
 
 ```bash
 python tiff_to_zarr.py
 ```
+We will work with `data/KazanskyStar_converted.zarr` for Dataset 1 from now on.
 
 ## Metadata Extraction
 
@@ -52,12 +53,20 @@ czb-zarr-challenge metadata   --zarr_path /path/to/YourData.zarr   --output_path
 ### Examples
 
 ```bash
-czb-zarr-challenge metadata   --zarr_path data/KazanskyStar_converted.zarr   --output_path metadata_KazanskyStar.txt
+czb-zarr-challenge metadata   --zarr_path data/KazanskyStar_converted.zarr   --output_path output/metadata_KazanskyStar.txt
 
-czb-zarr-challenge metadata   --zarr_path data/20241107_infection.zarr   --output_path metadata_20241107.txt
+czb-zarr-challenge metadata   --zarr_path data/20241107_infection.zarr   --output_path output/metadata_20241107.txt
 ```
 
-> Code for this metadata extraction is found in `get_metadata.py`. It uses IOHub’s `open_ome_zarr(...)` to open the store and IOHub’s node objects to navigate Plate → Position → ImageArray. The script prints the full OME-Zarr hierarchy to stdout and writes a human-readable `.txt` containing:
+Note: if you're having issues with your environment or PATH, you can always invoke the CLI entrypoint directly with Python:
+
+```bash
+python -m czb_zarr_challenge.cli metadata \
+  --zarr_path data/KazanskyStar_converted.zarr \
+  --output_path metadata_KazanskyStar.txt
+```
+
+> Code for this metadata extraction is found in `get_metadata.py`. It uses iohub’s `open_ome_zarr(...)` to open the store and iohub’s node objects to navigate from Plate -> Position -> ImageArray. The script prints the full OME-Zarr hierarchy to stdout, and writes a human-readable `.txt` containing:
 >
 > - **Layout** (Plate / Position / TiledPosition)  
 > - **Shape** (e.g., `(T, C, Z, Y, X)`)  
@@ -68,7 +77,7 @@ czb-zarr-challenge metadata   --zarr_path data/20241107_infection.zarr   --outpu
 
 ## Inference Profiling
 
-The custom PyTorch `DataLoader` (in `dataloader.py`) uses ioub and OME-Zarr to read 5D volumes from Dataset 2. We profile both data-loading and inference times using a pretrained ResNet-18.
+The custom PyTorch `DataLoader` (in `dataloader.py`) uses iohub and OME-Zarr to read 5D volumes from Dataset 2. We profile both dataloading and inference times using a pretrained ResNet-18.
 
 ```bash
 czb-zarr-challenge run_inference   --zarr_path data/20241107_infection.zarr
@@ -82,11 +91,11 @@ Average inference time:       Y.YYYY s
 ```
 
 > - The `run_inference` subcommand calls `profile_inference(...)` in `inference.py`.  
-> - It takes the center Z slice of each 5D batch, resizes to 224×224, normalizes (ImageNet stats), and runs a forward pass on ResNet-18.
+> - It takes the center Z slice of each 5D batch, resizes to 224×224, normalizes (using ImageNet stats), and runs a forward pass on ResNet-18.
 
 ## Nuclei Segmentation
 
-To segment nuclei on the DAPI channel and save labels back into the same OME-Zarr store:
+To segment nuclei using the DAPI channel and save labels back into the same OME-Zarr store:
 
 ```bash
 czb-zarr-challenge segment   data/20241107_infection.zarr   --nuclei-channel nuclei_DAPI   --label-name nuclei_labels
@@ -123,7 +132,14 @@ czb-zarr-challenge visualize   data/20241107_infection.zarr   output/
 ### Examples
 
 ```bash
-czb-zarr-challenge visualize   data/20241107_infection.zarr   output/   --timepoints 0 5 10   --z-slice 8   --no-segmentation   --show-infection   --intensity-increase 2.0   --count-increase 20
+# plot nuclei overlay only, for timepoints 0, 5, and 10
+czb-zarr-challenge visualize   data/20241107_infection.zarr   output/ --timepoints 0 5 10
+
+# plot segmentation outlines
+czb-zarr-challenge visualize   data/20241107_infection.zarr   output/
+
+# plot timelapse of cell infection
+czb-zarr-challenge visualize   data/20241107_infection.zarr   output/   --z-slice 8   --no-segmentation   --show-infection   --intensity-increase 3.0   --count-increase 60
 ```
 
 - `zarr_path` – input OME-Zarr store  
@@ -132,12 +148,12 @@ czb-zarr-challenge visualize   data/20241107_infection.zarr   output/   --timepo
 - `--z-slice` 〈int〉 (default = middle slice)  
 - `--no-segmentation` (disable contour overlay)  
 - `--show-infection` (recolor nuclei in magenta when virus volume crosses threshold)  
-- `--intensity-increase` 〈float〉 (default = 2.0) – fold-change threshold for infection onset  
-- `--count-increase` 〈int〉 (default = 20) – absolute voxel count increase threshold for infection onset  
+- `--intensity-increase` 〈float〉 (default = 3.0) – fold-change threshold for infection onset  
+- `--count-increase` 〈int〉 (default = 60) – absolute voxel count increase threshold for infection onset  
 
-> **Implementation details:**  
 > - The `visualize` subcommand calls `visualize_infection(...)` in `visualize.py`.  
 > - It can overlay segmentation contours and recolor infected nuclei once criteria are met.
+> - Infection criteria are based on in-nucleus infected voxel count, which are computed in `infection_dynamics.py`.
 
 ## Dependencies & Environment
 
