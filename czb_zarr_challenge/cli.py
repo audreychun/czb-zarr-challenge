@@ -63,7 +63,7 @@ def main():
     seg_parallel_parser.add_argument("--nuclei-channel", type=str, default="nuclei_DAPI", help="channel to segment (default: nuclei_DAPI)")
     seg_parallel_parser.add_argument("--label-name", type=str, default="nuclei_labels", help="output label dataset name")
     seg_parallel_parser.add_argument("--profile", action="store_true", help=("this will run segmentation twice (once on single worker and once on eight workers), print elapsed times for comparison"))
-    seg_parser.set_defaults(func=_profile_parallel_segmentation)
+    seg_parallel_parser.set_defaults(func=_profile_parallel_segmentation)
 
     # ------------ visualization! ------------
     """ 
@@ -113,7 +113,7 @@ def _handle_metadata(args):
     sys.exit(0)
 
 def _handle_inference(args):
-    print(f"\n--- Profiling inference for Zarr store: {args.store} ---")
+    print(f"\n--- Profiling inference for Zarr store: {args.zarr_path} ---")
     profile_inference(zarr_path=args.zarr_path)
     sys.exit(0)
 

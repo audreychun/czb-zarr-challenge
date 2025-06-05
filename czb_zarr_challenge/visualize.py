@@ -10,8 +10,8 @@ from pathlib import Path
 from iohub import open_ome_zarr
 import imageio.v2 as imageio
 from skimage.exposure import rescale_intensity # for 3D normalizing, does vol_norm = (vol - vol.min()) / (vol.max() - vol.min())
-from infection_dynamics import compute_infection_onset, compute_nuclear_virus_volumes
-from utils import hex_to_rgb01 
+from czb_zarr_challenge.infection_dynamics import compute_infection_onset, compute_nuclear_virus_volumes
+from czb_zarr_challenge.utils import hex_to_rgb01 
 import dask.array as da 
 
 

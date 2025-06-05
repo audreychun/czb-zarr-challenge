@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from torchvision import models
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from dataloader import OMEZarrDataset
+from czb_zarr_challenge.dataloader import OMEZarrDataset
 
 
 def profile_inference(zarr_path, batch_size=4, num_batches=10):
